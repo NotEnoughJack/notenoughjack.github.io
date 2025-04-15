@@ -18,20 +18,20 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 20px 120px;
+      padding: 40px 1px;
       background-color: #0f0f1b;
     }
 
     header img {
-      height: 40px;
-      margin-left: 120px;
+      height: 50px;
+      margin-left: 50px;
     }
 
     nav a {
       color: white;
       text-decoration: none;
       margin-left: 20px;
-      margin-right: 120px;
+      margin-right: 50px;
       font-weight: bold;
     }
 
@@ -102,19 +102,26 @@
 </head>
 
 <body>
+  
   <header class="flex items-center justify-between p-4">
-    <img src="logo.png" alt="Bot Logo" class="h-10 ml-[50px]">
-    <nav class="flex space-x-4 mr-[50px]">
-      <a href="#" class="text-white text-lg hover:underline">Home</a>
-      <a href="#" class="text-white text-lg hover:underline">Support</a>
+    <a href="/index.html">
+      <img src="logo.png" alt="Bot Logo" class="h-10 translate-x-[50px]">
+    </a>
+    <nav class="flex space-x-4 -translate-x-[50px]">
+      <a href="/index.html" class="text-white text-lg hover:underline">Home</a>
+      <a href="https://discord.gg/QdPtKfNZqq" class="text-white text-lg hover:underline" target="_blank" rel="noopener noreferrer">Support</a>
     </nav>
   </header>
+  
+  
+
 
   <div class="main">
     <h1>The best link dispenser for Discord</h1>
     <h2>LinkVault is your new best friend</h2>
     <p>Use our bot with ease and frequent updates</p>
-    <button class="add-button">Add to Discord</button>
+    <button class="add-button" onclick="window.location.href='https://discord.com/oauth2/authorize?client_id=1361802244009492590&permissions=2147863616&scope=bot%20applications.commands'">Add to Discord</button>
+
     <button class="features-button" onclick="document.getElementById('readme').scrollIntoView({behavior: 'smooth'})">See features</button>
   </div>
 
