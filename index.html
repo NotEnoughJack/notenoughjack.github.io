@@ -1,242 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+<style>
+body, html {
+  height: 100%;
+  margin: 0;
+}
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LinkVault</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #0f0f1b;
-      color: white;
-    }
+.bgimg {
+  background-image: url('https://raw.githubusercontent.com/NotEnoughJack/notenoughjack.github.io/refs/heads/main/images/image.png');
+  height: 100%;
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  color: white;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 25px;
+}
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 40px 1px;
-      background-color: #0f0f1b;
-    }
+.topleft {
+  position: absolute;
+  top: 0;
+  left: 16px;
+}
 
-    header img {
-      height: 50px;
-      margin-left: 50px;
-    }
+.bottomleft {
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+}
 
-    nav a {
-      color: white;
-      text-decoration: none;
-      margin-left: 20px;
-      margin-right: 50px;
-      font-weight: bold;
-    }
+.middle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
 
-    .main {
-      text-align: center;
-      padding: 80px 20px;
-    }
-
-    .main h1 {
-      font-size: 3em;
-      margin-bottom: 10px;
-    }
-
-    .main h2 {
-      font-size: 2em;
-      margin-bottom: 20px;
-    }
-
-    .main p {
-      font-size: 1.2em;
-      max-width: 600px;
-      margin: 0 auto 40px;
-    }
-
-    .main button {
-      font-size: 1em;
-      padding: 15px 25px;
-      border: none;
-      border-radius: 8px;
-      margin: 10px;
-      cursor: pointer;
-    }
-
-    .add-button {
-      background-color: #5865f2;
-      color: white;
-    }
-
-    .features-button {
-      background-color: #2f3136;
-      color: white;
-    }
-
-    .logos-section {
-      text-align: center;
-      padding: 60px 20px;
-    }
-
-    .logos-section h3 {
-      font-size: 1.5em;
-      margin-bottom: 20px;
-    }
-
-    .logos img {
-      height: 40px;
-      margin: 0 15px;
-    }
-
-    .readme-container {
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #0f0f1b;
-      color: white;
-      font-family: 'Inter', sans-serif;
-    }
-  </style>
-</head>
-
+hr {
+  margin: auto;
+  width: 40%;
+}
+</style>
 <body>
-  
-  <header class="flex items-center justify-between p-4">
-    <a href="/index.html">
-      <img src="logo.png" alt="Bot Logo" class="h-10 translate-x-[50px]">
-    </a>
-    <nav class="flex space-x-4 -translate-x-[50px]">
-      <a href="/index.html" class="text-white text-lg hover:underline">Home</a>
-      <a href="https://discord.gg/QdPtKfNZqq" class="text-white text-lg hover:underline" target="_blank" rel="noopener noreferrer">Support</a>
-    </nav>
-  </header>
-  
-  
 
-
-  <div class="main">
-    <h1>The best link dispenser for Discord</h1>
-    <h2>LinkVault is your new best friend</h2>
-    <p>Use our bot with ease and frequent updates</p>
-    <button class="add-button" onclick="window.location.href='https://discord.com/oauth2/authorize?client_id=1361802244009492590&permissions=2147863616&scope=bot%20applications.commands'">Add to Discord</button>
-
-    <button class="features-button" onclick="document.getElementById('readme').scrollIntoView({behavior: 'smooth'})">See features</button>
+<div class="bgimg">
+  <div class="topleft">
+    <p>NotEnoughJack</p>
   </div>
-
-  <div class="logos-section">
-    <h3>Used by</h3>
-    <div class="logos">
-      <img src="logo1.png" alt="Compass Network">
-      <img src="electric.gif" alt="Electric Network">
-      <img src="nymbar.png" alt="NymBar">
-      <img src="jack.png" alt="Unstable">
-    </div>
+  <div class="middle">
+    <h1>W.I.P</h1>
+    <hr>
+    <p>Never coming out</p>
   </div>
-
-  <div id="readme" class="readme-container">
-    <h2>Features and Usage Guide</h2>
-    <pre><code>
-      # LinkVault User Guide
-
-      **LinkVault** Sends random links from a private list created by its user(Like alternative website domains) to members in your Discord server with role-based access and optional cooldowns.
-      
-      This guide shows **how to use the bot** in your server.
-      
-      ---
-      
-      ##  Uses
-      
-      - Sends **a random link** to users via **DM**
-      - Limits access using a **access role**
-      - Allows **boosters to bypass cooldowns**
-      - Prevents abuse with a **24-hour cooldown**
-      - Supports **multiple servers** with independent configs
-      - Fully customizable embed (title, description, etc.)
-      
-      ---
-      
-      ## Step 1: Invite the Bot
-      
-      https://discord.com/oauth2/authorize?client_id=1361802244009492590&permissions=2147863616&scope=bot%20applications.commands
-      
-      ##  Step 2: Run `/setup`
-      
-      Use the `/setup` command to configure the bot for your server.
-      
-      > You **must have Administrator permissions** to use this command.
-      
-      ### Example:
-      
-      /Setup
-      
-      You'll be asked to select:
-      
-      - `channel`: The channel where the embed will be posted
-      - `access_role`: The role users need to use the button
-      - `booster_role`: Optional – users with this role skip cooldowns
-      - `pastebin_link`: Pastebin link with your private links (1 link per line)
-      - `embed_title` _(optional)_: Title of the embed
-      - `embed_description` _(optional)_: Description under the title
-      
-      > **Tip:** If you leave the title empty, it will use your server’s name by default.
-      
-      ---
-      
-      ## ✏️ Step 3: Update Settings Anytime
-      
-      Use `/updateconfig` to make changes later.
-      
-      > Only provide the fields you want to update — leave the rest blank.
-      
-      ### Example:
-      
-      `/updateconfig access_role: Verified pastebin_link: https://pastebin.com/raw/abc123`
-      
-      
-      ---
-      
-      ##  Step 4: Members Use the Button
-      
-      When members click the **"Get a Link"** button in the embed:
-      
-      - ✅ If they have the access role, they get a random link via DM
-      - ⏳ If they're not a booster, they must wait 24h before clicking again
-      - 💎 Boosters skip cooldown entirely
-      - ❌ If they don’t have the required role, they’re denied
-      
-      > **Make sure users enable DMs** from the server so they can receive links!
-      
-      ---
-      
-      ## 📌 Example Pastebin Format
-      
-      Your Pastebin should look like this:
-      
-      ```
-      https://example.com/link1
-      https://example.com/link2
-      https://example.com/link3 
-      ```
-      
-      
-      Only one link per line. The bot will pick a random one every time.
-      
-      ---
-      
-      ## Need Help?
-      
-      Contact through the discord if:
-      
-      - You need help with setup
-      - You want a feature added
-      - You encounter a bug
-      
-      Enjoy!
-      
-          </code></pre>
+  <div class="bottomleft">
+    <p>NotEnoughJack.github.io</p>
   </div>
+</div>
+
 </body>
-
 </html>
