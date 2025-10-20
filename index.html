@@ -1,198 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Roblox User Info</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 20px;
-      color: #222;
-    }
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-    }
-    input, button {
-      padding: 10px;
-      font-size: 16px;
-    }
-    input {
-      width: 200px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-    }
-    button {
-      background: #007bff;
-      border: none;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
-    section {
-      margin-top: 25px;
-    }
-    .error {
-      background: #ffe5e5;
-      color: #b00000;
-      padding: 10px;
-      border-radius: 6px;
-      margin-top: 10px;
-    }
-    .list {
-      background: #fafafa;
-      border: 1px solid #eee;
-      padding: 10px;
-      border-radius: 6px;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User Identifier</title>
+<style>
+  body { font-family: Arial, sans-serif; background: #f2f3f5; margin: 0; padding: 20px; color: #222; }
+  .container { max-width: 1000px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+  h1 { text-align: center; margin-bottom: 10px; }
+  input, button { padding: 10px; font-size: 16px; }
+  input { width: 250px; border: 1px solid #ccc; border-radius: 6px; }
+  button { background: #007bff; border: none; color: white; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #0056b3; }
+  section { margin-top: 25px; }
+  .error { background: #ffe5e5; color: #b00000; padding: 10px; border-radius: 6px; margin-top: 10px; white-space: pre-line; }
+  table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+  th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+  th { background: #007bff; color: white; }
+  .log { background: #fafafa; border: 1px solid #eee; padding: 10px; border-radius: 6px; font-size: 14px; white-space: pre-line; margin-top: 10px; }
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>Roblox User Info</h1>
-    <div>
-      <input id="userIdInput" type="number" placeholder="Enter User ID" />
-      <button id="fetchBtn">Fetch Info</button>
-    </div>
-    <div id="error" class="error" style="display:none;"></div>
-    <div id="output"></div>
+<div class="container">
+  <h1>User Identifier</h1>
+  <div>
+    <input id="userIdInput" type="number" placeholder="Enter Roblox User ID" />
+    <button id="fetchBtn">Fetch Info</button>
   </div>
 
-  <script>
-    const output = document.getElementById("output");
-    const errorBox = document.getElementById("error");
+  <div id="error" class="error" style="display:none;"></div>
+  <div id="output"></div>
+  <div id="log" class="log"></div>
+</div>
+<script>
+const output = document.getElementById("output");
+const errorBox = document.getElementById("error");
+const logBox = document.getElementById("log");
+const fetchBtn = document.getElementById("fetchBtn");
 
-    document.getElementById("fetchBtn").addEventListener("click", () => {
-      const userId = document.getElementById("userIdInput").value.trim();
-      if (!userId) {
-        showError("Please enter a userId.");
-        return;
+const corsProxies = [
+  { name: "corsproxy.io", url: "https://corsproxy.io/?" },
+  { name: "AllOrigins", url: "https://api.allorigins.win/raw?url=" },
+  { name: "Freeboard", url: "https://thingproxy.freeboard.io/fetch/" }
+];
+
+let lastFetchedData = null; // store full data for download
+
+document.getElementById("fetchBtn").addEventListener("click", () => {
+  const userId = document.getElementById("userIdInput").value.trim();
+  if (!userId) return showError("Please enter a Roblox user ID.");
+  fetchUserData(userId);
+});
+
+function showError(msg) {
+  errorBox.style.display = "block";
+  errorBox.textContent = msg;
+}
+function clearError() { errorBox.style.display = "none"; }
+function log(msg) { logBox.textContent += msg + "\n"; }
+
+async function fetchJson(url) {
+  for (const proxy of corsProxies) {
+    const fullUrl = proxy.url + encodeURIComponent(url);
+    log(` Trying ${proxy.name}: ${url}`);
+    try {
+      const res = await fetch(fullUrl);
+      if (res.status === 429) {
+        log(` ${proxy.name} rate-limited (429). Trying next proxy...`);
+        continue;
       }
-      fetchUserData(userId);
-    });
-
-    function showError(msg) {
-      errorBox.style.display = "block";
-      errorBox.textContent = msg;
+      if (res.status === 404) throw new Error(`404 (Not Found)`);
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      const data = await res.json();
+      log(` ${proxy.name} success`);
+      return data;
+    } catch (err) {
+      log(` ${proxy.name} failed: ${err.message}`);
     }
+  }
+  throw new Error("All proxies failed or rate-limited.");
+}
 
-    function clearError() {
-      errorBox.style.display = "none";
-    }
+async function fetchUserData(userId) {
+  clearError();
+  logBox.textContent = "";
+  output.innerHTML = "<p>Loading data...</p>";
+  hideDownloadButton();
 
-    async function fetchJson(url) {
-      const res = await fetch(url);
-      if (!res.ok) throw new Error("Request failed: " + res.status);
-      return res.json();
-    }
+  try {
+    const profile = await fetchJson(`https://users.roblox.com/v1/users/${userId}`);
+    if (!profile || profile.errors) throw new Error("User not found or private.");
 
-    async function fetchUserData(userId) {
-      clearError();
-      output.innerHTML = "<p>Loading data...</p>";
+    const endpoints = {
+      outfits: `https://avatar.roblox.com/v1/users/${userId}/outfits`,
+      friends: `https://friends.roblox.com/v1/users/${userId}/friends?limit=10`,
+      followersCount: `https://friends.roblox.com/v1/users/${userId}/followers/count`,
+      followingCount: `https://friends.roblox.com/v1/users/${userId}/followings/count`,
+      groups: `https://users.roblox.com/v1/users/${userId}/groups`,
+      badges: `https://badges.roblox.com/v1/users/${userId}/badges?limit=100`
+    };
 
+    const results = {};
+    for (const [key, endpoint] of Object.entries(endpoints)) {
       try {
-        const cached = localStorage.getItem("rbx_user_" + userId);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          renderData(parsed);
-          console.log("Loaded from cache");
-        }
-
-        const [profile, outfits, friendsCount, friendsList, followers, followings, groups, badges] = await Promise.all([
-          fetchJson(`https://users.roblox.com/v1/users/${userId}`),
-          fetchJson(`https://avatar.roblox.com/v1/users/${userId}/outfits`),
-          fetchJson(`https://friends.roblox.com/v1/users/${userId}/friends/count`),
-          fetchJson(`https://friends.roblox.com/v1/users/${userId}/friends?limit=10`),
-          fetchJson(`https://friends.roblox.com/v1/users/${userId}/followers/count`),
-          fetchJson(`https://friends.roblox.com/v1/users/${userId}/followings?limit=10`),
-          fetchJson(`https://users.roblox.com/v1/users/${userId}/groups`),
-          fetchJson(`https://badges.roblox.com/v1/users/${userId}/badges?limit=100`)
-        ]);
-
-        const sortedBadges = (badges.data || []).sort((a, b) => new Date(a.awardedDate) - new Date(b.awardedDate));
-        const firstGame = sortedBadges.find(b => b.awardedDate) || { name: "Unknown", awardedDate: "Unknown" };
-
-        const data = {
-          profile,
-          outfits,
-          friendsCount,
-          friendsList,
-          followers,
-          followings,
-          groups,
-          badges: sortedBadges,
-          firstGame
-        };
-
-        localStorage.setItem("rbx_user_" + userId, JSON.stringify(data));
-        renderData(data);
-      } catch (err) {
-        console.error(err);
-        showError("Error fetching data: " + err.message);
+        results[key] = await fetchJson(endpoint);
+      } catch (e) {
+        results[key] = { error: e.message };
+        log(` ${key} failed: ${e.message}`);
       }
     }
 
-    function renderData(data) {
-      output.innerHTML = `
-        <section>
-          <h2>User</h2>
-          <div class="list">
-            <b>${data.profile.displayName}</b> (@${data.profile.name})<br>
-            Joined: ${new Date(data.profile.created).toLocaleDateString()}
-          </div>
-        </section>
+    const badgesData = await enrichBadges(results.badges?.data || []);
 
-        <section>
-          <h2>Outfits (${data.outfits.data.length})</h2>
-          <div class="list">
-            ${data.outfits.data.map(o => `<div>${o.name}</div>`).join('') || 'No outfits found'}
-          </div>
-        </section>
+    // Save all data for download
+    lastFetchedData = {
+      profile,
+      data: results,
+      badges: badgesData,
+      fetchedAt: new Date().toISOString()
+    };
 
-        <section>
-          <h2>Friends (${data.friendsCount.count})</h2>
-          <div class="list">
-            ${data.friendsList.data.map(f => `<div>${f.displayName}</div>`).join('') || 'No friends listed'}
-          </div>
-        </section>
+    renderData(profile, results, badgesData);
+    showDownloadButton(profile.name);
+  } catch (err) {
+    console.error(err);
+    showError("Error fetching data:\n" + err.message);
+  }
+}
 
-        <section>
-          <h2>Followers / Following</h2>
-          <div class="list">
-            Followers: ${data.followers.count} <br>
-            Following: ${data.followings.count}
-          </div>
-        </section>
+async function enrichBadges(badges) {
+  if (!badges || !badges.length) return [];
 
-        <section>
-          <h2>Groups (${data.groups.data.length})</h2>
-          <div class="list">
-            ${data.groups.data.map(g => `<div>${g.group.name} - Role: ${g.role.name}</div>`).join('') || 'No groups found'}
-          </div>
-        </section>
-
-        <section>
-          <h2>Badges (${data.badges.length})</h2>
-          <div class="list">
-            First Game Badge: ${data.firstGame.name || 'Unknown'} (${data.firstGame.awardedDate || 'Unknown'})<br><br>
-            ${data.badges.map(b => `<div>${b.name} - ${b.awardedDate ? new Date(b.awardedDate).toLocaleDateString() : 'Unknown'}</div>`).join('')}
-          </div>
-        </section>
-      `;
+  const enriched = [];
+  for (const badge of badges) {
+    let date = "Unknown";
+    if (badge.awardedDate) {
+      const parsed = new Date(badge.awardedDate);
+      if (!isNaN(parsed)) date = parsed.toLocaleDateString();
     }
-  </script>
+
+    let game = "Unknown";
+    try {
+      const details = await fetchJson(`https://badges.roblox.com/v1/badges/${badge.id}`);
+      game = details.awardingUniverse?.name || "Unknown";
+    } catch {
+      game = "Unknown";
+    }
+
+    enriched.push({
+      name: badge.name,
+      game,
+      date,
+      rawDate: badge.awardedDate || null
+    });
+  }
+
+  enriched.sort((a, b) => {
+    const da = new Date(a.rawDate || 0).getTime();
+    const db = new Date(b.rawDate || 0).getTime();
+    return da - db;
+  });
+
+  return enriched;
+}
+
+function renderData(profile, data, badges) {
+  output.innerHTML = `
+    <section>
+      <h2>User Info</h2>
+      <table>
+        <tr><th>Display Name</th><td>${profile.displayName}</td></tr>
+        <tr><th>Username</th><td>${profile.name}</td></tr>
+        <tr><th>User ID</th><td>${profile.id}</td></tr>
+        <tr><th>Created</th><td>${new Date(profile.created).toLocaleDateString()}</td></tr>
+        <tr><th>Description</th><td>${profile.description || "None"}</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Outfits</h2>
+      ${data.outfits?.error
+        ? `<div class='error'>${data.outfits.error}</div>`
+        : makeTable(["Name", "Outfit ID"], (data.outfits.data || []).map(o => [o.name, o.id]))}
+    </section>
+
+    <section>
+      <h2>Friends</h2>
+      ${data.friends?.error
+        ? `<div class='error'>${data.friends.error}</div>`
+        : makeTable(["Name", "User ID"], (data.friends.data || []).map(f => [f.displayName, f.id]))}
+    </section>
+
+    <section>
+      <h2>Followers / Following</h2>
+      <table>
+        <tr><th>Followers</th><td>${data.followersCount?.count ?? "?"}</td></tr>
+        <tr><th>Following</th><td>${data.followingCount?.count ?? "?"}</td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>Groups</h2>
+      ${data.groups?.error
+        ? `<div class='error'>${data.groups.error}</div>`
+        : makeTable(["Group Name", "Role"], (data.groups.data || []).map(g => [g.group.name, g.role.name]))}
+    </section>
+
+    <section>
+      <h2>Badges (sorted by date)</h2>
+      ${!badges.length
+        ? "No badges found."
+        : makeTable(["Badge", "Game", "Awarded Date"], badges.map(b => [b.name, b.game, b.date]))}
+    </section>
+  `;
+}
+
+function makeTable(headers, rows) {
+  if (!rows.length) return "No data available.";
+  const head = "<tr>" + headers.map(h => `<th>${h}</th>`).join("") + "</tr>";
+  const body = rows.map(r => "<tr>" + r.map(v => `<td>${v}</td>`).join("") + "</tr>").join("");
+  return `<table>${head}${body}</table>`;
+}
+
+function showDownloadButton(username) {
+  let btn = document.getElementById("downloadBtn");
+  if (!btn) {
+    btn = document.createElement("button");
+    btn.id = "downloadBtn";
+    btn.textContent = "⬇️ Download Data (JSON)";
+    btn.style.marginBottom = "10px";
+    btn.style.display = "block";
+    btn.onclick = () => downloadData(username);
+    fetchBtn.parentNode.insertBefore(btn, fetchBtn.nextSibling);
+  }
+  btn.style.display = "block";
+}
+function hideDownloadButton() {
+  const btn = document.getElementById("downloadBtn");
+  if (btn) btn.style.display = "none";
+}
+
+function downloadData(username) {
+  if (!lastFetchedData) return alert("No data to download.");
+  const blob = new Blob([JSON.stringify(lastFetchedData, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${username}_roblox_data.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+
 </body>
 </html>
